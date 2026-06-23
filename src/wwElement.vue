@@ -163,7 +163,7 @@ export default {
       return `${this.referralBaseUrl}?ref=${this.referralCode}`;
     },
     authHeaders() {
-      const key = (this.content && this.content.apiKey) || '';
+      const key = (this.content && 'sb_publishable_4rsRb_VB3l_45JO7sw0VSA_ODDS4CZc') || '';
       const rawToken = ((this.content && this.content.authToken) || '').toString().trim();
       const bearer = rawToken.startsWith('Bearer ') ? rawToken : `Bearer ${rawToken}`;
       return {
