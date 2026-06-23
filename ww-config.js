@@ -47,11 +47,11 @@ export default {
       type: 'Text',
       section: 'settings',
       bindable: true,
-      defaultValue: 'https://hramtisch.ch',
+      defaultValue: 'https://app.imploya.ch',
       /* wwEditor:start */
       bindingValidation: {
         type: 'string',
-        tooltip: 'Basis-URL der Landingpage, auf die der Empfehlungs-Link zeigt. Default: https://hramtisch.ch',
+        tooltip: 'Basis-URL der Landingpage, auf die der Empfehlungs-Link zeigt. Default: https://app.imploya.ch',
       },
       /* wwEditor:end */
     },

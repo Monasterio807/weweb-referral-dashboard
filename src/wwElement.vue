@@ -155,7 +155,7 @@ export default {
       return String(url).replace(/\/+$/, '');
     },
     referralBaseUrl() {
-      const url = (this.content && this.content.baseUrl) || 'https://hramtisch.ch';
+      const url = (this.content && this.content.baseUrl) || 'https://app.imploya.ch';
       return String(url).replace(/\/+$/, '');
     },
     referralLink() {
