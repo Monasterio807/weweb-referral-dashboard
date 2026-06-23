@@ -1,0 +1,14 @@
+{
+  "name": "weweb-referral-dashboard",
+  "version": "1.0.0",
+  "description": "WeWeb Coded Component – Referral-Dashboard (Empfehlungssystem, HRklar): zeigt persönlichen Code, Empfehlungs-Link (Copy-Clipboard) und Einladungs-Stats.",
+  "private": true,
+  "scripts": {
+    "build": "weweb build",
+    "serve": "weweb serve"
+  },
+  "devDependencies": {
+    "@weweb/cli": "latest"
+  },
+  "license": "UNLICENSED"
+}
