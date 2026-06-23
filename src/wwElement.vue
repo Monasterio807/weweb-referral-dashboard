@@ -147,7 +147,7 @@ export default {
       }
     },
     hasAuth() {
-      return !!(this.content && this.content.authToken);
+      return !!(this.content && ((this.content && this.content.authToken) || (typeof wwLib !== 'undefined' && wwLib.globalContext && wwLib.globalContext.auth && wwLib.globalContext.auth.session && wwLib.globalContext.auth.session.access_token) || ''));
     },
     supabaseBase() {
       let url = (this.content && this.content.supabaseUrl) || 'https://ztvqsxdudzdyqgeylujr.supabase.co';
@@ -164,7 +164,7 @@ export default {
     },
     authHeaders() {
       const key = (this.content && 'sb_publishable_4rsRb_VB3l_45JO7sw0VSA_ODDS4CZc') || '';
-      const rawToken = ((this.content && this.content.authToken) || '').toString().trim();
+      const rawToken = ((this.content && ((this.content && this.content.authToken) || (typeof wwLib !== 'undefined' && wwLib.globalContext && wwLib.globalContext.auth && wwLib.globalContext.auth.session && wwLib.globalContext.auth.session.access_token) || '')) || '').toString().trim();
       const bearer = rawToken.startsWith('Bearer ') ? rawToken : `Bearer ${rawToken}`;
       return {
         apikey: key,
