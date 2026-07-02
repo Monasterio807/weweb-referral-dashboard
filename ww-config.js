@@ -27,7 +27,7 @@ export default {
       type: 'Text',
       section: 'settings',
       bindable: true,
-      defaultValue: '',
+      defaultValue: 'sb_publishable_4rsRb_VB3l_45JO7sw0VSA_ODDS4CZc',
       /* wwEditor:start */
       bindingValidation: {
         type: 'string',
