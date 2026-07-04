@@ -66,6 +66,31 @@
             </p>
           </div>
 
+          <!-- Teilen: WhatsApp + E-Mail -->
+          <div class="ref-dash__share">
+            <p class="hrk-label hrk-muted hrk-small ref-dash__share-label">Direkt teilen</p>
+            <div class="hrk-actions ref-dash__share-row">
+              <a
+                class="hrk-btn hrk-btn--secondary ref-dash__share-btn"
+                :href="whatsappUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Über WhatsApp teilen"
+              >
+                <svg class="hrk-icon hrk-icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="11" r="8"/><polygon points="6,21 7.5,16.5 11,18.5"/><polyline points="8.5,13.5 10,15 14,15 15.5,13.5"/></svg>
+                WhatsApp
+              </a>
+              <a
+                class="hrk-btn hrk-btn--secondary ref-dash__share-btn"
+                :href="mailUrl"
+                aria-label="Per E-Mail teilen"
+              >
+                <svg class="hrk-icon hrk-icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3,7 12,13 21,7"/></svg>
+                E-Mail
+              </a>
+            </div>
+          </div>
+
         </div>
 
         <!-- Stats (graceful: nur anzeigen wenn Daten vorhanden) -->
@@ -161,6 +186,24 @@ export default {
     referralLink() {
       if (!this.referralCode) return '';
       return `${this.referralBaseUrl}?ref=${this.referralCode}`;
+    },
+    shareText() {
+      const link = this.referralLink;
+      if (!link) return '';
+      return `Ich nutze Imploya für meine HR-Aufgaben — teste es kostenlos: ${link}`;
+    },
+    whatsappUrl() {
+      if (!this.referralLink) return '#';
+      return `https://wa.me/?text=${encodeURIComponent(this.shareText)}`;
+    },
+    mailUrl() {
+      const link = this.referralLink;
+      if (!link) return '#';
+      const subject = encodeURIComponent('Tipp: Imploya – deine HR-Assistentin fürs KMU');
+      const body = encodeURIComponent(
+        `Hallo,\n\nIch nutze Imploya für HR-Dokumente (Verträge, Zeugnisse, Meldungen) — in Minuten erledigt.\n\nStarte kostenlos hier: ${link}\n\nViel Erfolg!`,
+      );
+      return `mailto:?subject=${subject}&body=${body}`;
     },
     authHeaders() {
       const key = (this.content && this.content.apiKey) || '';
@@ -578,6 +621,31 @@ export default {
   margin: var(--hrk-space-3) 0 0;
 }
 
+/* Teilen (WhatsApp / E-Mail) */
+.ref-dash__share {
+  margin-top: 0;
+}
+.ref-dash__share-label {
+  margin: 0 0 var(--hrk-space-2);
+}
+.ref-dash__share-row {
+  display: flex;
+  gap: var(--hrk-space-2);
+  align-items: stretch;
+}
+.ref-dash__share-btn {
+  flex: 1 1 0;
+}
+.hrk-icon {
+  width: var(--hrk-icon-size-md, 20px);
+  height: var(--hrk-icon-size-md, 20px);
+  flex: none;
+}
+.hrk-icon--sm {
+  width: var(--hrk-icon-size-sm, 16px);
+  height: var(--hrk-icon-size-sm, 16px);
+}
+
 /* --- Responsive --- */
 @media (max-width: 600px) {
   .hrk-page { padding: var(--hrk-space-4) var(--hrk-space-3); }
@@ -585,5 +653,6 @@ export default {
   .ref-dash__link-row { flex-direction: column; align-items: stretch; }
   .ref-dash__copy-btn { min-width: unset; width: 100%; }
   .ref-dash__code { letter-spacing: .10em; }
+  .ref-dash__share-row { flex-direction: column; align-items: stretch; }
 }
 </style>
