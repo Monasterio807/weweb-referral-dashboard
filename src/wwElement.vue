@@ -171,8 +171,34 @@ export default {
         return false;
       }
     },
+    // Token zuerst aus der Property (WeWeb-Binding). Faellt diese leer/veraltet aus (das
+    // Prop-Binding hinkt nach Login/Refresh hinterher), nehmen wir die LIVE-Session aus dem
+    // WeWeb-Auth-Kontext bzw. die persistierte Supabase-Session.
+    tokenRaw() {
+      const fromProp = ((this.content && this.content.authToken) || '').toString().trim();
+      if (fromProp) return fromProp;
+      try {
+        const auth = (typeof wwLib !== 'undefined' && wwLib.globalContext && wwLib.globalContext.auth) ? wwLib.globalContext.auth : null;
+        const at = auth && auth.session && auth.session.access_token;
+        if (at) return String(at).trim();
+      } catch (e) { /* ignore */ }
+      try {
+        const win = (typeof wwLib !== 'undefined' && wwLib.getFrontWindow) ? wwLib.getFrontWindow() : (typeof window !== 'undefined' ? window : null);
+        const ls = win && win.localStorage;
+        if (ls) {
+          const ref = ((String(this.supabaseBase || '').match(/https?:\/\/([a-z0-9]+)\.supabase\.co/i) || [])[1]) || 'ztvqsxdudzdyqgeylujr';
+          const raw = ls.getItem(`sb-${ref}-auth-token`);
+          if (raw) {
+            const o = JSON.parse(raw);
+            const at = (o && o.access_token) || (o && o.currentSession && o.currentSession.access_token);
+            if (at) return String(at).trim();
+          }
+        }
+      } catch (e) { /* ignore */ }
+      return '';
+    },
     hasAuth() {
-      return !!(this.content && ((this.content && this.content.authToken) || (typeof wwLib !== 'undefined' && wwLib.globalContext && wwLib.globalContext.auth && wwLib.globalContext.auth.session && wwLib.globalContext.auth.session.access_token) || ''));
+      return !!this.tokenRaw;
     },
     supabaseBase() {
       let url = (this.content && this.content.supabaseUrl) || '';
@@ -207,7 +233,7 @@ export default {
     },
     authHeaders() {
       const key = (this.content && this.content.apiKey) || '';
-      const rawToken = ((this.content && ((this.content && this.content.authToken) || (typeof wwLib !== 'undefined' && wwLib.globalContext && wwLib.globalContext.auth && wwLib.globalContext.auth.session && wwLib.globalContext.auth.session.access_token) || '')) || '').toString().trim();
+      const rawToken = this.tokenRaw;
       const bearer = rawToken.startsWith('Bearer ') ? rawToken : `Bearer ${rawToken}`;
       return {
         apikey: key,
@@ -265,6 +291,55 @@ export default {
       this.$emit('trigger-event', { name, event: payload || {} });
     },
 
+    // Bei 401 das Supabase-Token via GoTrue (refresh_token) erneuern und Request wiederholen.
+    async _refreshAuthToken() {
+      try {
+        const auth = (typeof wwLib !== 'undefined' && wwLib.globalContext && wwLib.globalContext.auth) ? wwLib.globalContext.auth : null;
+        const apiKey = (this.content && this.content.apiKey) || '';
+        const win = (typeof wwLib !== 'undefined' && wwLib.getFrontWindow) ? wwLib.getFrontWindow() : (typeof window !== 'undefined' ? window : null);
+        const ls = win && win.localStorage;
+        const ref = ((String(this.supabaseBase || '').match(/https?:\/\/([a-z0-9]+)\.supabase\.co/i) || [])[1]) || 'ztvqsxdudzdyqgeylujr';
+        let rt = auth && auth.session && auth.session.refresh_token;
+        if (!rt) {
+          try {
+            const raw = ls && ls.getItem(`sb-${ref}-auth-token`);
+            if (raw) {
+              const o = JSON.parse(raw);
+              rt = (o && o.refresh_token) || (o && o.currentSession && o.currentSession.refresh_token);
+            }
+          } catch (e) { /* ignore */ }
+        }
+        if (!rt || !apiKey) return '';
+        const res = await this.fetchWithTimeout(`${this.supabaseBase}/auth/v1/token?grant_type=refresh_token`, {
+          method: 'POST', headers: { apikey: apiKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: rt }),
+        });
+        if (!res.ok) return '';
+        const ns = await res.json();
+        if (!ns || !ns.access_token) return '';
+        try {
+          const wwSess = { access_token: ns.access_token, token_type: ns.token_type, expires_in: ns.expires_in, expires_at: ns.expires_at, refresh_token: ns.refresh_token };
+          if (ls) {
+            ls.setItem('ww-auth-session', JSON.stringify(wwSess));
+            const k = `sb-${ref}-auth-token`; const cur = JSON.parse(ls.getItem(k) || '{}');
+            ls.setItem(k, JSON.stringify(Object.assign(cur, wwSess, { user: ns.user || cur.user })));
+          }
+          if (auth && auth.session) Object.assign(auth.session, wwSess);
+        } catch (e) { /* writeback best-effort */ }
+        return ns.access_token;
+      } catch (e) { return ''; }
+    },
+
+    // Header mit einem frisch erneuerten Token (fuer den 401-Retry).
+    freshHeaders(token) {
+      return {
+        apikey: (this.content && this.content.apiKey) || '',
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      };
+    },
+
     // ----------------------------------------------------------------
     // Laden
     // ----------------------------------------------------------------
@@ -305,14 +380,24 @@ export default {
      *  Wir normalisieren alle Fälle.
      */
     async loadCode() {
-      const res = await this.fetchWithTimeout(
-        `${this.supabaseBase}/rest/v1/rpc/ensure_referral_code`,
-        {
-          method: 'POST',
-          headers: this.authHeaders,
-          body: JSON.stringify({}),
-        },
-      );
+      const codeUrl = `${this.supabaseBase}/rest/v1/rpc/ensure_referral_code`;
+      let res = await this.fetchWithTimeout(codeUrl, {
+        method: 'POST',
+        headers: this.authHeaders,
+        body: JSON.stringify({}),
+      });
+
+      if (res.status === 401) {
+        // Token abgelaufen (60-Min-Session) — einmalig erneuern und wiederholen.
+        const fresh = await this._refreshAuthToken();
+        if (fresh) {
+          res = await this.fetchWithTimeout(codeUrl, {
+            method: 'POST',
+            headers: this.freshHeaders(fresh),
+            body: JSON.stringify({}),
+          });
+        }
+      }
 
       if (res.status === 401 || res.status === 403) {
         throw Object.assign(new Error('auth'), { reason: 'auth' });
@@ -351,16 +436,25 @@ export default {
      * Schlägt die Query fehl (403, 404, kein Zugriff), wird showStats false gelassen.
      */
     async loadStats() {
-      const res = await this.fetchWithTimeout(
-        `${this.supabaseBase}/rest/v1/referrals?select=id,status,reward_referrer,rewarded_at`,
-        {
-          method: 'GET',
-          headers: {
-            ...this.authHeaders,
-            Prefer: 'return=representation',
-          },
+      const statsUrl = `${this.supabaseBase}/rest/v1/referrals?select=id,status,reward_referrer,rewarded_at`;
+      let res = await this.fetchWithTimeout(statsUrl, {
+        method: 'GET',
+        headers: {
+          ...this.authHeaders,
+          Prefer: 'return=representation',
         },
-      );
+      });
+
+      if (res.status === 401) {
+        // Token abgelaufen (60-Min-Session) — einmalig erneuern und wiederholen.
+        const fresh = await this._refreshAuthToken();
+        if (fresh) {
+          res = await this.fetchWithTimeout(statsUrl, {
+            method: 'GET',
+            headers: { ...this.freshHeaders(fresh), Prefer: 'return=representation' },
+          });
+        }
+      }
 
       if (!res.ok) return; // graceful: keine Stats wenn kein Zugriff
 
