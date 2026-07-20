@@ -201,8 +201,8 @@ export default {
       return !!this.tokenRaw;
     },
     supabaseBase() {
-      let url = (this.content && this.content.supabaseUrl) || '';
-      if (/nemxnflngcfrpamkuesm/.test(String(url))) url = '';
+      let url = (this.content && this.content.supabaseUrl) || 'https://ztvqsxdudzdyqgeylujr.supabase.co';
+      if (/nemxnflngcfrpamkuesm/.test(String(url))) url = 'https://ztvqsxdudzdyqgeylujr.supabase.co';
       return String(url).replace(/\/+$/, '');
     },
     referralBaseUrl() {
