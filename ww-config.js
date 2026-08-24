@@ -47,11 +47,11 @@ export default {
       type: 'Text',
       section: 'settings',
       bindable: true,
-      defaultValue: 'https://app.imploya.ch',
+      defaultValue: 'https://23b703e4-73e4-4c23-b854-da8e6f264b55-production.weweb.io',
       /* wwEditor:start */
       bindingValidation: {
         type: 'string',
-        tooltip: 'Basis-URL der Landingpage, auf die der Empfehlungs-Link zeigt. Default: https://app.imploya.ch',
+        tooltip: 'Basis-URL der Landingpage, auf die der Empfehlungs-Link zeigt. Default ist die erreichbare App-Adresse; imploya.ch und app.imploya.ch existieren im DNS noch nicht (Stand 24.08.2026).',
       },
       /* wwEditor:end */
     },

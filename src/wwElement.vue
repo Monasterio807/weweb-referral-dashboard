@@ -206,7 +206,7 @@ export default {
       return String(url).replace(/\/+$/, '');
     },
     referralBaseUrl() {
-      const url = (this.content && this.content.baseUrl) || 'https://app.imploya.ch';
+      const url = (this.content && this.content.baseUrl) || 'https://23b703e4-73e4-4c23-b854-da8e6f264b55-production.weweb.io';
       return String(url).replace(/\/+$/, '');
     },
     referralLink() {
