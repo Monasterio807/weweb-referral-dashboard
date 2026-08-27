@@ -4,7 +4,9 @@
   "description": "WeWeb Coded Component – Referral-Dashboard (Empfehlungssystem, HRklar): zeigt persönlichen Code, Empfehlungs-Link (Copy-Clipboard) und Einladungs-Stats.",
   "private": true,
   "scripts": {
-    "build": "weweb build",
+    "build": "weweb build name=weweb-referral-dashboard type=wwobject",
+    "prebuild": "node -e \"require('fs').rmSync('dist/manager.js',{force:true})\"",
+    "postbuild": "node -e \"const fs=require('fs');let s;try{s=fs.statSync('dist/manager.js')}catch(e){};if(!s||s.size<1000){console.error('Bau fehlgeschlagen: dist/manager.js wurde nicht geschrieben.');process.exit(1)}\"",
     "serve": "weweb serve"
   },
   "devDependencies": {
