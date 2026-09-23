@@ -57,7 +57,7 @@
                 :aria-label="copied ? 'Link in die Zwischenablage kopiert' : 'Empfehlungs-Link kopieren'"
                 @click="copyLink"
               >
-                <span v-if="copied">✓&nbsp;Kopiert!</span>
+                <span v-if="copied" class="ref-dash__copied"><svg class="hrk-icon hrk-icon--sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="5,12.5 10,17.5 19,7"/></svg>Kopiert!</span>
                 <span v-else>Link kopieren</span>
               </button>
             </div>
@@ -110,7 +110,7 @@
               <dd>{{ rewardCount }}</dd>
             </div>
           </dl>
-          <p v-if="invitedCount === 0" class="hrk-muted hrk-small ref-dash__empty-hint">
+          <p v-if="invitedCount === 0" class="hrk-muted ref-dash__empty-hint">
             Noch keine Einladungen — teile deinen Link und leg los!
           </p>
         </div>
@@ -521,24 +521,24 @@ export default {
   --hrk-bordeaux:        #7B2D3B;
   --hrk-bordeaux-dark:   #5E2129;
   --hrk-bordeaux-soft:   #F3E7E9;
-  --hrk-creme:           #FBF8F3;
-  --hrk-anthrazit:       #2B2B2B;
+  --hrk-creme: #F7F5F1;
+  --hrk-anthrazit: #241F1C;
   --hrk-gold:            #C9A24B;
   --hrk-on-primary:      #FFFFFF;
   --hrk-surface:         #FFFFFF;
-  --hrk-surface-muted:   #F5F1EB;
-  --hrk-border:          #ECE5D9;
-  --hrk-border-strong:   #DAD2C6;
-  --hrk-text:            #2B2B2B;
+  --hrk-surface-muted: #F2EFEA;
+  --hrk-border: #E2DDD5;
+  --hrk-border-strong: #CFC8BD;
+  --hrk-text: #241F1C;
   --hrk-text-muted:      #6B6357;
-  --hrk-success:         #2E7D5B;  --hrk-success-bg: #E5F1EB;
-  --hrk-warning:         #B7791F;  --hrk-warning-bg: #FBF1DD;
+  --hrk-success: #2A7254;  --hrk-success-bg: #E5F1EB;
+  --hrk-warning: #946010;  --hrk-warning-bg: #FBF1DD;
   --hrk-danger:          #B23A48;  --hrk-danger-bg:  #F8E7E9;
   --hrk-info:            #2F6F9F;  --hrk-info-bg:    #E6F0F7;
   --hrk-neutral:         #6B6357;  --hrk-neutral-bg: #EFEAE2;
-  --hrk-font-head: "Fraunces", "Lora", Georgia, serif;
+  --hrk-font-head: "Archivo", "Inter", system-ui, sans-serif;
   --hrk-font-body: "Inter", "Source Sans 3", system-ui, sans-serif;
-  --hrk-fs-h1:    1.9375rem;
+  --hrk-fs-h1: 1.875rem;
   --hrk-fs-h2:    1.375rem;
   --hrk-fs-h3:    1.125rem;
   --hrk-fs-body:  1.0625rem;
@@ -548,15 +548,33 @@ export default {
   --hrk-space-1: 4px;  --hrk-space-2: 8px;  --hrk-space-3: 12px;
   --hrk-space-4: 16px; --hrk-space-5: 24px; --hrk-space-6: 32px;
   --hrk-space-7: 48px;
-  --hrk-radius-sm:   8px;
-  --hrk-radius-md:   12px;
-  --hrk-radius-lg:   14px;
-  --hrk-radius-pill: 999px;
+  --hrk-radius-sm: 6px;
+  --hrk-radius-md: 6px;
+  --hrk-radius-lg: 10px;
+  --hrk-radius-pill: 6px;
   --hrk-shadow-card: 0 1px 2px rgba(40,35,30,.05);
-  --hrk-shadow-pop:  0 8px 28px rgba(40,35,30,.12);
-  --hrk-focus-ring:  0 0 0 3px rgba(123,45,59,.30);
+  --hrk-shadow-pop: 0 1px 2px rgba(40,35,30,.05);
+  --hrk-focus-ring: 0 0 0 3px rgba(51,71,91,.35);
   --hrk-tap-min:  44px;
   --hrk-page-max: 880px;
+  /* Design-Umsetzung 23.09.2026 (Phase 1): Schiefer, Schriften, zwei Radien, ein Schatten */
+  --hrk-schiefer: #33475B;
+  --hrk-schiefer-dark: #243444;
+  --hrk-schiefer-soft: #EBEEF1;
+  --hrk-on-dark: #FFFFFF;
+  --hrk-on-dark-strong: rgba(255,255,255,.92);
+  --hrk-on-dark-soft: rgba(255,255,255,.82);
+  --hrk-on-dark-muted: rgba(255,255,255,.40);
+  --hrk-on-dark-faint: rgba(255,255,255,.12);
+  --hrk-overlay: rgba(20,24,28,.55);
+  --hrk-font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --hrk-font-brand: "Fraunces", Georgia, serif;
+  --hrk-fs-xs: 0.8125rem;
+  --hrk-ls-caps: .06em;
+  --hrk-radius-field: 6px;
+  --hrk-radius-card: 10px;
+  --hrk-shadow: 0 1px 2px rgba(40,35,30,.05);
+  --hrk-page-wide: 1200px;
 }
 
 /* --- Basis --- */
@@ -581,7 +599,7 @@ export default {
   font-weight: var(--hrk-fw-semibold);
   line-height: 1.2;
   letter-spacing: -.01em;
-  color: var(--hrk-bordeaux);
+  color: var(--hrk-text);
   margin: 0 0 var(--hrk-space-3);
 }
 .hrk-muted  { color: var(--hrk-text-muted); }
@@ -594,32 +612,31 @@ export default {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--hrk-space-2);
   min-height: var(--hrk-tap-min); padding: 0 var(--hrk-space-5);
   font: inherit; font-weight: var(--hrk-fw-semibold);
-  border-radius: var(--hrk-radius-md); border: 1px solid transparent;
+  border-radius: var(--hrk-radius-field); border: 1px solid transparent;
   cursor: pointer; text-decoration: none;
-  transition: background .15s, border-color .15s, transform .05s;
+  transition: background .15s, border-color .15s, color .15s;
   white-space: nowrap;
 }
-.hrk-btn:active { transform: translateY(1px); }
 .hrk-btn:focus-visible { outline: none; box-shadow: var(--hrk-focus-ring); }
 .hrk-btn--primary   { background: var(--hrk-bordeaux); color: var(--hrk-on-primary); }
 .hrk-btn--primary:hover { background: var(--hrk-bordeaux-dark); }
-.hrk-btn--secondary { background: var(--hrk-surface); color: var(--hrk-bordeaux); border-color: var(--hrk-border-strong); }
-.hrk-btn--secondary:hover { background: var(--hrk-bordeaux-soft); }
+.hrk-btn--secondary { background: var(--hrk-surface); color: var(--hrk-schiefer); border-color: var(--hrk-border-strong); }
+.hrk-btn--secondary:hover { background: var(--hrk-schiefer-soft); }
 
 /* --- Eingabefelder --- */
 .hrk-field  { display: block; margin-bottom: 0; }
 .hrk-input {
   width: 100%; min-height: var(--hrk-tap-min); padding: var(--hrk-space-3);
   font: inherit; color: var(--hrk-text); background: var(--hrk-surface);
-  border: 1px solid var(--hrk-border); border-radius: var(--hrk-radius-sm);
+  border: 1px solid var(--hrk-border-strong); border-radius: var(--hrk-radius-field);
 }
-.hrk-input:focus { outline: none; border-color: var(--hrk-bordeaux); box-shadow: var(--hrk-focus-ring); }
+.hrk-input:focus { outline: none; border-color: var(--hrk-schiefer); box-shadow: var(--hrk-focus-ring); }
 
 /* --- Karte --- */
 .hrk-card {
   background: var(--hrk-surface);
   border: 1px solid var(--hrk-border);
-  border-radius: var(--hrk-radius-lg);
+  border-radius: var(--hrk-radius-card);
   box-shadow: var(--hrk-shadow-card);
   padding: var(--hrk-space-5);
 }
@@ -644,11 +661,14 @@ export default {
 .hrk-spinner {
   width: 28px; height: 28px;
   border: 3px solid var(--hrk-border);
-  border-top-color: var(--hrk-bordeaux);
+  border-top-color: var(--hrk-schiefer);
   border-radius: 50%;
   animation: hrk-spin .8s linear infinite;
 }
 @keyframes hrk-spin { to { transform: rotate(360deg); } }
+
+/* --- Aktionsleiste --- */
+.hrk-actions { display: flex; flex-wrap: wrap; gap: var(--hrk-space-3); }
 
 /* ============================================================
    Referral-Dashboard spezifische Styles
@@ -681,7 +701,7 @@ export default {
   font-size: clamp(2rem, 8vw, 3rem);
   font-weight: var(--hrk-fw-semibold);
   letter-spacing: .15em;
-  color: var(--hrk-bordeaux);
+  color: var(--hrk-schiefer); /* Daten = Schiefer (vorher Bordeaux) */
   margin: 0;
   user-select: all;
   line-height: 1.1;
@@ -705,6 +725,7 @@ export default {
   flex: 0 0 auto;
   min-width: 140px;
 }
+.ref-dash__copied { display: inline-flex; align-items: center; gap: var(--hrk-space-1); }
 
 /* Stats-Karte */
 .ref-dash__stats-card {
