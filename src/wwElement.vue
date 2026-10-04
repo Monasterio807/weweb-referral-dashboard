@@ -16,7 +16,7 @@
       <!-- Ladefehler -->
       <div v-else-if="uiState === 'loadError'" class="hrk-card" role="alert">
         <p class="hrk-muted">
-          Der Empfehlungs-Code konnte nicht geladen werden — bitte die Seite neu laden.
+          Der Empfehlungs-Code konnte nicht geladen werden. Lade die Seite neu.
         </p>
       </div>
 
@@ -216,7 +216,7 @@ export default {
     shareText() {
       const link = this.referralLink;
       if (!link) return '';
-      return `Ich nutze Imploya für meine HR-Aufgaben — teste es kostenlos: ${link}`;
+      return `Ich nutze Imploya für meine HR-Aufgaben. Teste es kostenlos: ${link}`;
     },
     whatsappUrl() {
       if (!this.referralLink) return '#';
@@ -225,9 +225,9 @@ export default {
     mailUrl() {
       const link = this.referralLink;
       if (!link) return '#';
-      const subject = encodeURIComponent('Tipp: Imploya – deine HR-Assistentin fürs KMU');
+      const subject = encodeURIComponent('Tipp: Imploya, deine HR-Assistentin fürs KMU');
       const body = encodeURIComponent(
-        `Hallo,\n\nIch nutze Imploya für HR-Dokumente (Verträge, Zeugnisse, Meldungen) — in Minuten erledigt.\n\nStarte kostenlos hier: ${link}\n\nViel Erfolg!`,
+        `Hallo,\n\nIch nutze Imploya für HR-Dokumente (Verträge, Zeugnisse, Meldungen). In Minuten erledigt.\n\nStarte kostenlos hier: ${link}\n\nViel Erfolg!`,
       );
       return `mailto:?subject=${subject}&body=${body}`;
     },
