@@ -25,7 +25,7 @@
 
         <!-- Intro -->
         <p class="hrk-muted ref-dash__intro">
-          Empfehle Imploya weiter und profitiere: Für jeden Freund, der sich anmeldet und abonniert, erhältst du <strong>1 Monat gratis</strong>.
+          Empfehle imploya weiter und profitiere: Für jeden Freund, der sich anmeldet und abonniert, erhältst du <strong>1 Monat gratis</strong>.
         </p>
 
         <!-- Code + Link -->
@@ -218,7 +218,7 @@ export default {
     shareText() {
       const link = this.referralLink;
       if (!link) return '';
-      return `Ich nutze Imploya für meine HR-Aufgaben. Teste es kostenlos: ${link}`;
+      return `Ich nutze imploya für meine HR-Aufgaben. Teste es kostenlos: ${link}`;
     },
     whatsappUrl() {
       if (!this.referralLink) return '#';
@@ -227,9 +227,9 @@ export default {
     mailUrl() {
       const link = this.referralLink;
       if (!link) return '#';
-      const subject = encodeURIComponent('Tipp: Imploya, deine HR-Assistentin fürs KMU');
+      const subject = encodeURIComponent('Tipp: imploya, deine HR-Assistentin fürs KMU');
       const body = encodeURIComponent(
-        `Hallo,\n\nIch nutze Imploya für HR-Dokumente (Verträge, Zeugnisse, Meldungen). In Minuten erledigt.\n\nStarte kostenlos hier: ${link}\n\nViel Erfolg!`,
+        `Hallo,\n\nIch nutze imploya für HR-Dokumente (Verträge, Zeugnisse, Meldungen). In Minuten erledigt.\n\nStarte kostenlos hier: ${link}\n\nViel Erfolg!`,
       );
       return `mailto:?subject=${subject}&body=${body}`;
     },
