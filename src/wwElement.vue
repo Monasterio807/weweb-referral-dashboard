@@ -64,6 +64,7 @@
             <p v-if="copied" class="hrk-hint" role="status" aria-live="polite">
               Link wurde in die Zwischenablage kopiert.
             </p>
+            <p v-if="copyFehler" class="hrk-hint" role="alert">{{ copyFehler }}</p>
           </div>
 
           <!-- Teilen: WhatsApp + E-Mail -->
@@ -159,6 +160,7 @@ export default {
       rewardCount: 0,
       showStats: false,
       copied: false,
+      copyFehler: '',
       copyTimer: null,
     };
   },
@@ -482,6 +484,7 @@ export default {
     async copyLink() {
       if (!this.referralLink) return;
       const link = this.referralLink;
+      this.copyFehler = '';
 
       try {
         await navigator.clipboard.writeText(link);
@@ -494,11 +497,17 @@ export default {
           document.body.appendChild(el);
           el.focus();
           el.select();
-          document.execCommand('copy');
+          const ok = document.execCommand('copy');
           document.body.removeChild(el);
+          if (ok === false) {
+            this.copied = false;
+            this.copyFehler = 'Kopieren hat nicht geklappt. Markiere den Link und kopiere ihn von Hand.';
+            return;
+          }
         } catch (e2) {
-          // Wenn gar nichts geht, trotzdem kein Fehler anzeigen
           console.warn('[referral-dashboard] Clipboard-Fallback fehlgeschlagen:', e2);
+          this.copied = false;
+          this.copyFehler = 'Kopieren hat nicht geklappt. Markiere den Link und kopiere ihn von Hand.';
           return;
         }
       }
