@@ -23,9 +23,9 @@
       <!-- Geladen -->
       <template v-else-if="uiState === 'loaded'">
 
-        <!-- Intro -->
+        <!-- Intro. E34 (Richard 13.11.2026): kein Gratismonat versprochen, bis man eine Demo buchen kann. -->
         <p class="hrk-muted ref-dash__intro">
-          Empfehle imploya weiter und profitiere: Für jeden Freund, der sich anmeldet und abonniert, erhältst du <strong>1 Monat gratis</strong>.
+          Teile deinen persönlichen Link mit anderen Betrieben. Wir freuen uns über jede Empfehlung, auch wenn es dafür im Moment keinen Gratismonat gibt.
         </p>
 
         <!-- Code + Link -->
