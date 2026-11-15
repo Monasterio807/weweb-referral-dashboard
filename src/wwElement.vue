@@ -229,7 +229,7 @@ export default {
       if (!link) return '#';
       const subject = encodeURIComponent('Tipp: imploya, deine HR-Assistentin fürs KMU');
       const body = encodeURIComponent(
-        `Hallo,\n\nIch nutze imploya für HR-Dokumente (Verträge, Zeugnisse, Meldungen). In Minuten erledigt.\n\nStarte kostenlos hier: ${link}\n\nViel Erfolg!`,
+        `Hallo,\n\nIch nutze imploya für HR-Dokumente (Verträge, Zeugnisse). In Minuten erledigt.\n\nStarte kostenlos hier: ${link}\n\nViel Erfolg!`,
       );
       return `mailto:?subject=${subject}&body=${body}`;
     },

@@ -30,3 +30,11 @@ test("E34: Satz nach Canon steht genau einmal", () => {
 test("E34: kein ß im Template", () => {
   assert.equal(zaehle("ß"), 0);
 });
+
+// Canon-Hinweis P30: «Meldungen» in der Teilen-Mail meint Krank- und Unfallmeldung.
+// Beide sind ausgeblendet (startseite DEFAULT_HIDDEN), Corina Karte 708 / Antwort 415:
+// «überall herausnehmen, bis die Funktion sichtbar ist».
+test("Teilen-Mail nennt keine Meldungen mehr", () => {
+  assert.equal(sfc.split("Verträge, Zeugnisse, Meldungen").length - 1, 0);
+  assert.equal(sfc.split("HR-Dokumente (Verträge, Zeugnisse).").length - 1, 1);
+});
