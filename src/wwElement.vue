@@ -23,9 +23,9 @@
       <!-- Geladen -->
       <template v-else-if="uiState === 'loaded'">
 
-        <!-- Intro -->
+        <!-- Intro. E34 (Richard 13.11.2026): kein Gratismonat versprochen, bis man eine Demo buchen kann. -->
         <p class="hrk-muted ref-dash__intro">
-          Empfehle imploya weiter und profitiere: Für jeden Freund, der sich anmeldet und abonniert, erhältst du <strong>1 Monat gratis</strong>.
+          Teile deinen persönlichen Link mit anderen Betrieben. Wir freuen uns über jede Empfehlung, auch wenn es dafür im Moment keinen Gratismonat gibt.
         </p>
 
         <!-- Code + Link -->
@@ -229,7 +229,7 @@ export default {
       if (!link) return '#';
       const subject = encodeURIComponent('Tipp: imploya, deine HR-Assistentin fürs KMU');
       const body = encodeURIComponent(
-        `Hallo,\n\nIch nutze imploya für HR-Dokumente (Verträge, Zeugnisse, Meldungen). In Minuten erledigt.\n\nStarte kostenlos hier: ${link}\n\nViel Erfolg!`,
+        `Hallo,\n\nIch nutze imploya für HR-Dokumente (Verträge, Zeugnisse). In Minuten erledigt.\n\nStarte kostenlos hier: ${link}\n\nViel Erfolg!`,
       );
       return `mailto:?subject=${subject}&body=${body}`;
     },
